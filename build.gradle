@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "5.1.0"
+}
+
+group 'sh.okx'
+version '3.11.3'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+    maven {
+        url 'https://raw.github.com/PyvesB/AdvancedAchievements/mvn-repo/'
+    }
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.15:0.3.0'
+
+    compileOnly 'org.jetbrains:annotations:16.0.2'
+    implementation 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+    implementation('com.github.Realizedd:TokenManager:3.2.4') {
+        transitive = false
+    }
+
+    implementation('com.github.MilkBowl:VaultAPI:1.7') {
+        exclude group: 'org.bukkit'
+    }
+    implementation ('me.clip:placeholderapi:2.10.9') {
+        exclude group: 'org.bstats'
+    }
+    implementation 'com.github.pyvesb:advanced-achievements:6.7.2'
+    implementation 'com.github.astei:Superbvote:700fca43659b438cb9bb36c218a7646d2f2ef315'
+    implementation('com.github.mcMMO-Dev:mcMMO:601297') {
+        exclude group: 'com.sk89q.worldguard'
+    }
+    implementation 'com.github.BenCodez:VotingPlugin:6.0'
+    implementation 'com.github.LlmDl:Towny:25fc18a'
+}
+
+// automatically copy the version to plugin.yml
+processResources {
+    // do this again whenever version changes
+    inputs.property 'version', project.version
+
+    // copy plugin.yml and replace version
+    from(sourceSets.main.resources.srcDirs) {
+        include 'plugin.yml'
+        expand 'version': project.version
+    }
+
+    // copy everything else
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'plugin.yml'
+    }
+}
+
+task spigot(type: Jar) {
+    from sourceSets.main.runtimeClasspath
+    destinationDirectory = file("./spigot/plugins/")
+    archiveFileName = "Rankup.jar"
+}
